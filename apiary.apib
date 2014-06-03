@@ -1,0 +1,727 @@
+FORMAT: 1A
+HOST: http://www.example.com/
+
+# SeoMiner API
+SeoMiner API is collection of api's used in SeoMiner tool mainly as interconnect communication. We've opened this api so 
+you can connect your own tools to SeoMiner system or exchange default ones with something that better suits your needs.
+
+# Group Controller
+Controller is the main entry point for the user. It receives commands as of crawling needs and expose gather data to the 
+user interface. 
+
+## Domain [/domains/{name}]
+
++ Parameters
+    + name (required, string, `www.example.com`) ... Url encoded name of the `Domain` resource.
+    
++ Model (application/json)
+
+    JSON representation of Domain Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/domains/www.example.com" },
+                    "pages": { "href": "/domains/www.example.com/pages" },
+                    "keywords": { "href": "/domains/www.example.com/keywords" }
+                },
+                "name": "www.example.com",
+                "status": "ACTIVE"
+                "created_at": "2014-04-14T02:15:15Z"
+            }
+
+### Add Domain to the tracking system [POST]
++ Response 202
+
+### Query tracking system for specific domain [GET]
++ Response 200
+    [Domain][]
+
+### Remove a Domain from tracking system [DELETE]
++ Response 204
+
+## Page list [/domains/{name}/pages]
++ Parameters
+    + name (required, string, `www.example.com`) ... Url encoded name of the `Domain` resource.
+    
++ Model (application/json)
+
+    JSON representation of Page List Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/domains/www.example.com/pages" }
+                },
+                "pages": [
+                    {
+                        "_links" : {"self": { "href": "/pages/42" }},
+                        "id" : 42,
+                        "url": "http://www.example.com/"
+                    },
+                ],
+                "pages_count": 1
+            }
+            
+### Get list of contain pages for specific domain [GET]
++ Response 200
+    [Page list][]
+
+## Page [/pages/{id}]
++ Parameters
+    + id (required, number, `42`) ... Identifier of the `Page` resource.
+    
++ Model (application/json)
+
+    JSON representation of Page Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/pages/42" },
+                    "keywords": { "href": "/pages/42/keywords" },
+                    "links": { "href": "/pages/42/links" },
+                    "back_links": { "href": "/pages/42/backlinks" }
+                },
+                "id" : 42,
+                "created_at": "2014-04-14T02:15:15Z"
+                "url": "http://www.example.com/"
+                "domain" : {
+                    "_links": {"self": { "href": "/domains/www.example.com" }},
+                    "name": "www.example.com"
+                }
+            }
+            
+### Get specific page [GET]
++ Response 200
+    [Page][]
+
+## Page links [/pages/{id}/links]
++ Parameters
+    + id (required, number, `42`) ... Identifier of the `Page` resource.
+
++ Model (application/json)
+
+    JSON representation of Domain keywords List Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/pages/42/links" }
+                },
+                "links": [
+                    {
+                        "text": "link to test page",
+                        "page" : {
+                            "_links" : {"self": { "href": "/pages/43" }},
+                            "id" : 43,
+                            "url": "http://www.example.com/test"
+                        },
+                    },
+                ],
+                "links_count": 1
+                
+            }
+            
+### Get list of links from specific page [GET]
++ Response 200
+    [Page links][]            
+
+## Page backlinks [/pages/{id}/backlinks]
++ Parameters
+    + id (required, number, `42`) ... Identifier of the `Page` resource.
+
++ Model (application/json)
+
+    JSON representation of Domain keywords List Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/pages/42/backlinks" }
+                },
+                "backlinks": [
+                    {
+                        "text": "link from test page",
+                        "page" : {
+                            "_links" : {"self": { "href": "/pages/43" }},
+                            "id" : 43,
+                            "url": "http://www.example.com/test"
+                        },
+                    },
+                ],
+                "links_count": 1
+                
+            }
+            
+### Get list of links to the specific page [GET]
++ Response 200
+    [Page backlinks][]   
+
+
+## Page keywords [/page/{id}/keywords]
++ Parameters
+    + id (required, number, `42`) ... Identifier of the `Page` resource.
+    
++ Model (application/json)
+
+    JSON representation of Domain keywords List Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/page/42/keywords" }
+                },
+                "keywords": [
+                    {
+                        "_links" : {"self": { "href": "/keywords/example" }},
+                        "text": "example",
+                        "history" : [
+                            { 
+                                "_links": {"self": { "href": "/keyword/example/ranking/2" }},
+                                "created_at": "2014-04-15T02:15:15Z",
+                                "rank": 1
+                            },
+                            { 
+                                "_links": {"self": { "href": "/keyword/example/ranking/1" }},
+                                "created_at": "2014-04-14T02:15:15Z",
+                                "rank": 2
+                            }
+                        ],
+                        "history_count": 2
+                    },
+                ],
+                "keywords_count": 1
+            }
+            
+### Get list of keywords for specific page [GET]
++ Response 200
+    [Page keywords][]
+
+## Domain keywords [/domains/{name}/keywords]
++ Parameters
+    + name (required, string, `www.example.com`) ... Url encoded name of the `Domain` resource.
+    
++ Model (application/json)
+
+    JSON representation of Domain keywords List Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/domains/www.example.com/keywords" }
+                },
+                "keywords": [
+                    {
+                        "_links" : {"self": { "href": "/keywords/example" }},
+                        "text": "example",
+                        "page" : {
+                            "_links" : {"self": { "href": "/pages/42" }},
+                            "id" : 42,
+                            "url": "http://www.example.com/"
+                        }
+                        "history" : [
+                            { 
+                                "_links": {"self": { "href": "/keyword/example/ranking/2" }},
+                                "created_at": "2014-04-15T02:15:15Z",
+                                "rank": 1
+                            },
+                            { 
+                                "_links": {"self": { "href": "/keyword/example/ranking/1" }},
+                                "created_at": "2014-04-14T02:15:15Z",
+                                "rank": 2
+                            }
+                        ],
+                        "history_count": 2
+                    },
+                ],
+                "keywords_count": 1
+            }
+            
+### Get list of keywords for specific domain [GET]
++ Response 200
+    [Domain keywords][]
+
+## Keyword [/keyword/{text}]
+
++ Parameters
+    + text (required, string, `example`) ... Url encoded `text` representation of this keyword.
+    
++ Model (application/json)
+
+    JSON representation of Domain Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/keyword/example" },
+                    "ranking": { "href": "/keyword/example/ranking{?id}" }
+                },
+                "text": "example",
+                "created_at": "2014-04-14T02:15:15Z",
+                "status": "ACTIVE"
+            }
+
+### Add Keyword to watch list [POST]
++ Response 202
+
+### Get specific keyword [GET]
++ Response 200
+    [Keyword][]
+
+### Remove a Keyword [DELETE]
++ Response 204
+
+## Keyword Ranking [/keyword/{text}/ranking{?id}]
+
++ Parameters
+    + text (required, string, `example`) ... Url encoded `text` representation of this keyword.
+    + id (optional, numeric, `1`) ... Identifier of the ranking list. If not present that returns the last gathered ranking.
+
++ Model (application/json)
+
+    JSON representation of Domain Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/keyword/example/ranking/2" },
+                    "first": { "href": "/keyword/example/ranking/1" },
+                    "last": { "href": "/keyword/example/ranking/2" }
+                },
+                "text": "example",
+                "created_at": "2014-04-14T02:15:15Z",
+                "pages" : [
+                    {
+                        "rank": 1,
+                        "title": "Example (musician) - Wikipedia, the free encyclopedia", 
+                        "href": "http://www.example.com/", 
+                        "description": "Example first found success with the release of his second studio album, Won't Go Quietly, which peaked at number 4 on the UK Albums Chart and peaked at ...",
+                        "page" : {
+                            "_links" : {"self": { "href": "/pages/42" }},
+                            "id" : 42,
+                            "url": "http://www.example.com/"
+                        }
+                        
+                    },
+                    {
+                        "rank": 2, 
+                        "title": "Example | Test", 
+                        "href": "http://www.example.com/test", 
+                        "description": "Example. 1870673 likes · 4469 talking about this. Album 5 'Live Life Living' released June 2014 and available here: http://smarturl.it/ExampleOS.",
+                        "page" : {
+                            "_links" : {"self": { "href": "/pages/43" }},
+                            "id" : 43,
+                            "url": "http://www.example.com/test"
+                        }
+                    }
+                ],
+                "pages_count" : 2
+            }
+
+### Get specific keyword ranking [GET]
++ Response 200 (application/json)
+[Keyword Ranking][]
+
+# Group Provisioner
+
+## Account [/account]
+
++ Model (application/json)
+
+    JSON representation of Domain Resource.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/account" },
+                    "crawlers": { "href": "/crawlers" },
+                    "password_recovery": { "href": "/account/password_recovery" }
+                },
+                "email": "login@example.com",
+                "status": "ACTIVE",
+                "created_at": "2014-04-14T02:15:15Z",
+                "credits": 100
+            }
+
+### Register new account [POST]
++ Request (application/json)
+
+        {
+                    "email": "login@example.com"
+        }
+
++ Response 202
+
+### Get account details [GET]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200
+    [Account][]
+
+### Deregister account from the system [DELETE]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 204
+
+## Password recovery [/account/password_recovery]
+
+### Request password recovery for this account [POST]
++ Response 200
+
+
+## Crawler [/crawlers/{id}]
++ Parameters
+    + id (required, numeric, `1`) ... Identifier of the crawler.
+
++ Model (application/json)
+
+    JSON representation of the crawler.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/crawlers/1" }
+                },
+                "id": 1,
+                "name": "My crawler",
+                "ip": "127.0.0.1",
+                "created_at": "2014-04-14T02:15:15Z",
+                "status" : "ACTIVE",
+                "token" : "ba3ae0b3-84c3-4257-acdb-87fa9eab11ad"
+            }
+            
+### Get crawler details [GET]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200
+    [Crawler][]
+
+### Update status of the crawler [PUT]
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {   
+                "name": "My crawler",
+                "status": "ACTIVE"
+            }
+
++ Response 200
+    [Crawler][]
+
+### Deregister crawler from the system [DELETE]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 204
+
+
+## Crawlers list [/crawlers]
+    
++ Model (application/json)
+
+    JSON representation of account crawler list.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/crawlers" }
+                },
+                "crawlers": [
+                    {
+                        "_links" : {"self": { "href": "/crawlers/1" }},
+                        "id": 1,
+                        "name": "My crawler",
+                        "ip": "127.0.0.1",
+                        "status" : "ACTIVE"
+                    }
+                ],
+                "crawlers_count": 1
+            }
+            
+### Get list of crawlers registerd for your account [GET]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200
+    [Crawlers list][]
+
+### Register new crawler [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+
+            {
+                "name": "My crawler"
+            }
+
++ Response 201
+
+    [Crawler][]
+
+
+## Task [/tasks/{id}]
+
++ Parameters
+    + id (required, numeric, `1`) ... Identifier of the task.
+
++ Model (application/json)
+
+    JSON representation of the task.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/tasks/1" }
+                },
+                "id": 1,
+                "uuid": "a7e8ced0-eb45-11e3-ac10-0800200c9a66",
+                "created_at": "2014-04-14T02:15:15Z",
+                "status": "DONE",
+                "type": "ranking",
+                "task" : {"keyword" : "example", "count": 2},
+                "result" : {
+                    "pages" : [
+                        {
+                            "rank": 1,
+                            "title": "Example (musician) - Wikipedia, the free encyclopedia", 
+                            "href": "http://www.example.com/", 
+                            "description": "Example first found success with the release of his second studio album, Won't Go Quietly, which peaked at number 4 on the UK Albums Chart and peaked at ...",
+                            "page" : {
+                                "_links" : {"self": { "href": "/pages/42" }},
+                                "id" : 42,
+                                "url": "http://www.example.com/"
+                            }
+                            
+                        },
+                        {
+                            "rank": 2, 
+                            "title": "Example | Test", 
+                            "href": "http://www.example.com/test", 
+                            "description": "Example. 1870673 likes · 4469 talking about this. Album 5 'Live Life Living' released June 2014 and available here: http://smarturl.it/ExampleOS.",
+                            "page" : {
+                                "_links" : {"self": { "href": "/pages/43" }},
+                                "id" : 43,
+                                "url": "http://www.example.com/test"
+                            }
+                        }
+                    ],
+                    "pages_count" : 2
+                }
+            }
+            
+### Get task details [GET]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200
+    [Task][]
+
+### Cancel task [DELETE]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 204
+
+## Task list [/tasks]
+    
++ Model (application/json)
+
+    JSON representation of account crawler list.
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/tasks" }
+                },
+                "tasks": [
+                    {
+                        "_links" : {"self": { "href": "/tasks/1" }},
+                        "id": 1,
+                        "created_at": "2014-04-14T02:15:15Z",
+                        "status": "PENDING",
+                        "type": "ranking",
+                        "task" : {"keyword" : "example", "count": 2}
+                    }
+                ],
+                "tasks_count": 1
+            }
+            
+### Get list of tasks active for your account [GET]
++ Request
+
+    + Headers
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200
+    [Task list][]
+
+### Register new task [POST]
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {
+                "type": "ranking",
+                "task" : {"keyword" : "example", "count": 2}
+            }
+
+
++ Response 201 (application/json)
+
+        {
+            "_links": {
+                "self": { "href": "/tasks/1" }
+            },
+            "id": 1,
+            "uuid": "a7e8ced0-eb45-11e3-ac10-0800200c9a66",
+            "created_at": "2014-04-14T02:15:15Z",
+            "status": "PENDING",
+            "type": "ranking",
+            "task" : {"keyword" : "example", "count": 2},
+            "result" : {}
+        }
+        
+# Group Crawler        
+
+## Work [/work/{type}]
++ Model (application/json)
+
+    JSON representation of work item
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "href": "/work" }
+                },
+                "uuid": "a7e8ced0-eb45-11e3-ac10-0800200c9a66",
+                "type": "ranking",
+                "task" : {"keyword" : "example", "count": 2}
+            }
+            
+### Retrieve next work item [GET]
++ Parameters
+    + type (optional, string, `ranking`) ... Optional work type that you want to process
+
++ Request
+    
+    + Headers
+
+            X-Crawler-Token: ba3ae0b3-84c3-4257-acdb-87fa9eab11ad
+
++ Response 200
+    [Work][]
+
+## Work actions [/work/]
+
+
+### Resolve work item and put results [PUT]
+
++ Request
+    
+    + Headers
+
+            X-Crawler-Token: ba3ae0b3-84c3-4257-acdb-87fa9eab11ad
+
++ Request (application/json)
+
+        {
+                "uuid": "a7e8ced0-eb45-11e3-ac10-0800200c9a66",
+                "type": "ranking",
+                "task" : {"keyword" : "example", "count": 2},
+                "result" : {
+                    "pages" : [
+                        {
+                            "rank": 1,
+                            "title": "Example (musician) - Wikipedia, the free encyclopedia", 
+                            "href": "http://www.example.com/", 
+                            "description": "Example first found success with the release of his second studio album, Won't Go Quietly, which peaked at number 4 on the UK Albums Chart and peaked at ...",
+                            "page" : {
+                                "_links" : {"self": { "href": "/pages/42" }},
+                                "id" : 42,
+                                "url": "http://www.example.com/"
+                            }
+                            
+                        },
+                        {
+                            "rank": 2, 
+                            "title": "Example | Test", 
+                            "href": "http://www.example.com/test", 
+                            "description": "Example. 1870673 likes · 4469 talking about this. Album 5 'Live Life Living' released June 2014 and available here: http://smarturl.it/ExampleOS.",
+                            "page" : {
+                                "_links" : {"self": { "href": "/pages/43" }},
+                                "id" : 43,
+                                "url": "http://www.example.com/test"
+                            }
+                        }
+                    ],
+                    "pages_count" : 2
+                }
+            }
+
++ Response 201
+
+### Reject this working item [DELETE]
+
++ Request
+    
+    + Headers
+
+            X-Crawler-Token: ba3ae0b3-84c3-4257-acdb-87fa9eab11ad
+            
++ Response 204
